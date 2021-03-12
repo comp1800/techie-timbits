@@ -5,8 +5,7 @@
 * [Contents](#content)
 
 ## General Info
-This repository has an assortment of small functions (hence, "techie-timbits") for comp1800 tech-request demos.  
-They are meant to be bite-sized solutions to help students along. Enjoy! 
+This repo has assortment of small functions (hence, "techie-timbits") for comp1800 tech-request demos. They are meant to be bite-sized solutions to help students along. Enjoy! 
 	
 ## Technologies
 Technologies used for this project:
@@ -21,17 +20,17 @@ Content of the project folder:
 ```
  Top level of project folder: 
 ├── .gitignore               # Git ignore file
-├── index.html               # landing HTML file, this is what users see when you come to url
+├── main.html                # this is where the demo HTML elements are located
 └── README.md
 
 It has the following subfolders and files:
 ├── .git                     # Folder for git repo
 ├── images                   # Folder for images
-    /blah.jpg                # 
+    /blah.jpg                # This is where demo pictures are found
 ├── scripts                  # Folder for scripts
-    /blah.js                 # 
+    /my_functions.js         # This is where are demo functions are located
 ├── styles                   # Folder for styles
-    /blah.css                # 
+    /my_style.css            # This is where customized styles are located
 
 Firebase hosting files: 
 ├── .firebaserc...
