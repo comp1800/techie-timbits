@@ -51,8 +51,10 @@ function getCity() {
             .then(function (snap) {
                 snap.forEach(function(doc) {
                     console.log(doc.data());
+                    //do something with the data
                 })
             })
     })
 }
 getCity();
+
