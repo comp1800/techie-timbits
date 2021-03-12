@@ -1,11 +1,12 @@
-## My Web Application (Title)
+## Techie-Timbits
 
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Contents](#content)
 
 ## General Info
-This browser based web application to ...
+This repository has an assortment of small functions (hence, "techie-timbits") for comp1800 tech-request demos.  
+They are meant to be bite-sized solutions to help students along. Enjoy! 
 	
 ## Technologies
 Technologies used for this project:
