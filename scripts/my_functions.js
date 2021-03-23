@@ -52,7 +52,7 @@ function getCity() {
             .where("name", "==", location)
             .get()
             .then(function (snap) {
-                snap.forEach(function(doc) {
+                snap.forEach(function (doc) {
                     console.log(doc.data());
                     //do something with the data
                 })
@@ -61,7 +61,7 @@ function getCity() {
 }
 getCity();
 
-function getCountry(){
+function getCountry() {
     document.getElementById("globe").addEventListener('click', function () {
         var location = document.getElementById("country").value;
         console.log(location);
@@ -70,7 +70,7 @@ function getCountry(){
 }
 getCountry();
 
-function setDataPage1(){
+function setDataPage1() {
     //construct the JSON object here
     //you can get from user input form
     var myname = "Elmo";
@@ -88,8 +88,8 @@ function setDataPage1(){
 }
 setDataPage1();
 
-function getDataPage2(){
-    var myobj = JSON.parse(localStorage.getItem('formdata'));    
+function getDataPage2() {
+    var myobj = JSON.parse(localStorage.getItem('formdata'));
     console.log(myobj);
     //do something with the object
     //console.log(myobj.name);   //to print name field
@@ -108,25 +108,125 @@ getDataPage2();
 */
 //------------------------------------------
 
-function readCollection(){
+function showCollection() {
     db.collection("cities").get()
-    .then(function(snap){
-        snap.forEach(function(doc){
-            // do something with each document
-            var pic = doc.data().picture;
-            var title = doc.data().name;
-            var code = doc.data().code;
-            
-            var codestring = '<div>'+
-            '<img src="images/' + pic + '" class="card-img-top">'+
-            '<div class="card-body">'+
-            '<h5 class="card-title">' + title + '</h5>'+
-            '<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>'+
-            '<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>'+
-            '</div>';
+        .then(function (snap) {
+            snap.forEach(function (doc) {
+                // do something with each document
+                var pic = doc.data().picture; //key "picture"
+                var title = doc.data().name; //key "name"
 
-            $("#cards-go-here").append(codestring);
+                // construct the string for card
+                var codestring = '<div>' +
+                    '<img src="images/' + pic + '" class="card-img-top">' +
+                    '<div class="card-body">' +
+                    '<h5 class="card-title">' + title + '</h5>' +
+                    '<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>' +
+                    '<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>' +
+                    '</div>';
+                // append with jquery to DOM
+                $("#cards-go-here").append(codestring);
+            })
+        })
+}
+//showCollection();
+
+// Allow user to choose file to upload as profile picture
+// Where "mypicfile" is the id of the <input> for file
+// Where "mypic" is the id of the <img> DOM for display
+function uploadPicture() {
+    const reader = new FileReader(); //
+    const fileInput = document.getElementById("mypicfile");
+    const img = document.getElementById("mypic");
+    reader.onload = e => {
+        img.src = e.target.result;
+    }
+    fileInput.addEventListener('change', e => {
+        const f = e.target.files[0];
+        reader.readAsDataURL(f);
+    })
+}
+//uploadPicture();
+
+function showUploadedPicture() {
+    const fileInput = document.getElementById("mypic-input"); // pointer #1
+    const image = document.getElementById("mypic-goes-here"); // pointer #2
+    fileInput.addEventListener('change', function (e) { //event listener
+        var blob = URL.createObjectURL(e.target.files[0]);
+        var filename = e.target.files[0].name;
+        image.src = blob;
+    })
+}
+//showUploadedPicture();
+
+//-----------------------------------------------------------------
+// To let user upload a file to firebase storage service
+// Assume there's an "upload file" button. 
+// When the user clicks on it, ... 
+//-----------------------------------------------------------------
+function uploadUserProfilePic() {
+    // Let's assume my storage is only enabled for authenticated users 
+    // This is set in your firebase console storage "rules" tab
+    firebase.auth().onAuthStateChanged(function (user) {
+        var fileInput = document.getElementById("mypic-input");
+        const image = document.getElementById("mypic-goes-here"); // pointer #2
+
+        // listen for file selection
+        fileInput.addEventListener('change', function (e) {
+            var file = e.target.files[0];
+            var blob = URL.createObjectURL(file);
+            image.src = blob;
+
+            //store using this name
+            var storageRef = storage.ref("images/" + user.uid + ".jpg");
+
+            //upload the picked file
+            storageRef.put(file)
+                .then(function () {
+                    console.log('Uploaded to Cloud Storage.');
+                })
+
+            // storage bucket plus folder plus image name, which// is the user's doc id
+            //var picref = "gs://mango-smoothie.appspot.com/"+user.uid + ".jpg";
+
+            storageRef.getDownloadURL()
+                .then(function (url) { // Get URL of the uploaded file
+                    console.log(url); // Save the URL into users collection
+                    db.collection("users").doc(user.uid).update({
+                            "profilePic": url
+                        })
+                        .then(function () {
+                            console.log('Added Profile Pic URL to Firestore.');
+                        })
+                })
         })
     })
 }
-readCollection();
+uploadUserProfilePic();
+
+function displayUserProfilePic() {
+    console.log("hi");
+    firebase.auth().onAuthStateChanged(function (user) {
+        //console.log(user.uid);
+        db.collection("users").doc(user.uid)
+            .get()
+            .then(function (doc) {
+                //console.log(doc.data());
+                var picUrl = doc.data().profilePic;
+                //console.log(picUrl);
+                //$("#mypicdiv").append("<img src='" + picUrl + "'>")
+                $("#mypic-goes-here").attr("src", picUrl);
+            })
+    })
+}
+displayUserProfilePic();
+
+// put map into a DOM with id "map"
+let map;
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: -34.397, lng: 150.644 },
+    zoom: 8,
+  });
+}

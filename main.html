@@ -51,9 +51,13 @@
     </nav>
 
     <!-- Welcome and main part of the page -->
-    <!-- Here are a few buttons -->
     <div class="container text-center">
         <h1 class="display-4">Hello World!</h1>
+        <div id="map"></div>
+    </div>
+
+    <!-- Here are a few buttons -->
+    <div class="container text-center">
         <div class="text-center py-3">
             <button type="button" class="btn btn-info">B1</button>
         </div>
@@ -85,20 +89,87 @@
         <i id="globe" class="fas fa-globe"></i>
     </div>
 
-    <!-- Here is a sticky footer with some icons  -->
-    <footer class="navbar justify-content-evenly bg-info fixed-bottom">
-        <div class="container py-3">
-            <i class="fas fa-home"></i>
-            <i class="fas fa-cog fa-spin"></i>
-            <i class="fas fa-heart"></i>
-            <i class="fas fa-dog"></i>
-        </div>
-    </footer>
-
     <!-- Here is container for cards  -->
     <div id="cards-go-here" class="container">
     </div>
 
+    <!-- Here is a place to upload image file -->
+    <div class="container text-center py-3">
+        <div id="mypicdiv"></div>
+        <img id="mypic-goes-here" src="images/blah.jpg" width=50 height=50 />
+        <input type="file" id="mypic-input" accept="image/*" />
+    </div>
+
+    <!-- Demo about buttons -->
+    <div class="container">
+        <div class="center-text py-2">
+            <a href="drink.html" class="btn bg-sm bg-warning">B1</a>
+        </div>
+        <divc lass="center-text py-2">
+            <button type="button" onclick="someFunction()" class="btn btn-lg btn-warning">B2</button>
+        </div>
+    </div>
+
+    <!-- Demo about buttons in a grid -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B1</a>
+            </div>
+            <div class="col-lg text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B2</a>
+            </div>
+            <div class="col-lg text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B3</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B4</a>
+            </div>
+            <div class="col-lg text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B5</a>
+            </div>
+            <div class="col-lg text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B6</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row row-cols-2">
+            <div class="col text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B1</a>
+            </div>
+            <div class="col text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B2</a>
+            </div>
+            <div class="col text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B3</a>
+            </div>
+            <div class="col text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B4</a>
+            </div>
+            <div class="col text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B5</a>
+            </div>
+            <div class="col text-center py-3">
+                <a href="drink.html" class="btn bg-sm bg-warning">B6</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Here is a sticky footer with some icons  -->
+    <div class="container mb-5">
+        <footer class="navbar justify-content-evenly bg-info fixed-bottom">
+            <div class="container">
+                <i class="fas fa-home"></i>
+                <i class="fas fa-cog fa-spin"></i>
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-dog"></i>
+            </div>
+        </footer>
+    </div>
 
     <!----------------------------------------------->
     <!-- JS: Boostrap, Firebase, API related    -->
@@ -112,14 +183,27 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
+
 
     <!-- Link to the api keys for your firebase project -->
     <script src="./scripts/firebase_api_carly.js"></script>
+
 
     <!--------------------------------------------------------------------->
     <!-- JS files: Your own JavaScript functions included here    -->
     <!--------------------------------------------------------------------->
     <script src="./scripts/my_functions.js"> </script>
+
+    // Google map API key  AIzaSyB7axr095byxImKzxStw0t4ttz7uLIi-5I
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7axr095byxImKzxStw0t4ttz7uLIi-5I&callback=initMap"
+    type="text/javascript"></script>
+
+    <script>
+        function someFunction() {
+
+        }
+    </script>
 
 </body>
 
