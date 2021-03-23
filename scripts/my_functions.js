@@ -11,20 +11,39 @@ function readQuote() {
 
 function writeCities() {
     var citiesRef = db.collection("cities");
-
+    citiesRef.add({
+        code: "YVR",
+        name: "Vancouver",
+        hemisphere: "north",
+        population: 675218,
+        picture: "yvr.jpg"
+    });
     citiesRef.add({
         code: "DC",
         name: "Washington, D.C.",
-        picture: "washington.jpg"
+        hemisphere: "north",
+        picture: "washington.jpg",
+        population: 692683
     });
     citiesRef.add({
         code: "TOK",
         name: "Tokyo",
-        picture: "tokyo.jpg"
+        hemisphere: "north",
+        picture: "tokyo.jpg",
+        population: 9273000
+    });
+    citiesRef.add({
+        code: "CAPE",
+        name: "Cape Town",
+        hemisphere: "south",
+        population: 433688,
+        picture: "capetown.jpg"
     });
     citiesRef.add({
         code: "BJ",
         name: "Beijing",
+        hemisphere: "north",
+        population: 21540000,
         picture: "beijing.jpg"
     });
 }
