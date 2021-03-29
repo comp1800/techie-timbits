@@ -1,3 +1,7 @@
+function someFunction() {
+    console.log("hi from someFunction");
+}
+
 function readQuote() {
     db.collection("quotes").doc("tuesday")
         .onSnapshot(function (c) {
@@ -9,9 +13,13 @@ function readQuote() {
 }
 //readQuote();
 
+//----------------------------------------------------
+// write a whole bunch of cities to the cities collection
+//----------------------------------------------------
 function writeCities() {
     var citiesRef = db.collection("cities");
     citiesRef.add({
+        position: Math.floor(Math.random() * 1000),
         code: "YVR",
         name: "Vancouver",
         hemisphere: "north",
@@ -19,6 +27,7 @@ function writeCities() {
         picture: "yvr.jpg"
     });
     citiesRef.add({
+        position: Math.floor(Math.random() * 1000),
         code: "DC",
         name: "Washington, D.C.",
         hemisphere: "north",
@@ -26,6 +35,7 @@ function writeCities() {
         population: 692683
     });
     citiesRef.add({
+        position: Math.floor(Math.random() * 1000),
         code: "TOK",
         name: "Tokyo",
         hemisphere: "north",
@@ -33,6 +43,7 @@ function writeCities() {
         population: 9273000
     });
     citiesRef.add({
+        position: Math.floor(Math.random() * 1000),
         code: "CAPE",
         name: "Cape Town",
         hemisphere: "south",
@@ -40,6 +51,7 @@ function writeCities() {
         picture: "capetown.jpg"
     });
     citiesRef.add({
+        position: Math.floor(Math.random() * 1000),
         code: "BJ",
         name: "Beijing",
         hemisphere: "north",
@@ -50,18 +62,37 @@ function writeCities() {
 //writeCities();
 
 function displayCities() {
-    db.collection("cities").get()
+    db.collection("cities")
+        .get()
         .then(function (snap) {
             snap.forEach(function (doc) {
                 var n = doc.data().name;
                 console.log(n);
-                var cityid = doc.data().code;
-                console.log(cityid);
-                document.getElementById(cityid).innerText = n;
+                var citystring = "<p> " + n + "</p";
+                $("#cities-go-here").append(citystring);
             })
         })
 }
 //displayCities();
+
+//----------------------------------
+//Use a hack to generate random city
+//----------------------------------
+function displayRandomCity() {
+    db.collection("cities")
+        .where("position", ">", Math.floor(Math.random() * 1000))
+        .limit(1)
+        .get()
+        .then(function (snap) {
+            snap.forEach(function (doc) {
+                var n = doc.data().name;
+                console.log(n);
+                var citystring = "<p> " + n + "</p";
+                $("#cities-go-here").append(citystring);
+            })
+        })
+}
+displayRandomCity();
 
 function getCity() {
     document.getElementById("submit").addEventListener('click', function () {
@@ -105,7 +136,7 @@ function setDataPage1() {
     console.log(obj);
     localStorage.setItem('formdata', JSON.stringify(obj));
 }
-setDataPage1();
+//setDataPage1();
 
 function getDataPage2() {
     var myobj = JSON.parse(localStorage.getItem('formdata'));
@@ -113,7 +144,7 @@ function getDataPage2() {
     //do something with the object
     //console.log(myobj.name);   //to print name field
 }
-getDataPage2();
+//getDataPage2();
 
 //-----------------------------------------
 /*  <div class="card">
@@ -150,29 +181,40 @@ function showCollection() {
 }
 //showCollection();
 
-// Allow user to choose file to upload as profile picture
-// Where "mypicfile" is the id of the <input> for file
-// Where "mypic" is the id of the <img> DOM for display
-function uploadPicture() {
-    const reader = new FileReader(); //
-    const fileInput = document.getElementById("mypicfile");
-    const img = document.getElementById("mypic");
-    reader.onload = e => {
-        img.src = e.target.result;
-    }
-    fileInput.addEventListener('change', e => {
-        const f = e.target.files[0];
-        reader.readAsDataURL(f);
-    })
-}
-//uploadPicture();
+function showCaroselCollection() {
+    db.collection("cities").get()
+        .then(function (snap) {
+            snap.forEach(function (doc, i) {
+                // do something with each document
+                var pic = doc.data().picture; //key "picture"
+                var title = doc.data().name; //key "name"
+                console.log("index is " + i);
 
+                // construct the string for card
+                var codestring = '<div>' +
+                    '<img src="images/' + pic + '" class="card-img-top">' +
+                    '<div class="card-body">' +
+                    '<h5 class="card-title">' + title + '</h5>' +
+                    '<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>' +
+                    '<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>' +
+                    '</div>';
+                // append with jquery to DOM
+                $("#cards-go-here").append(codestring);
+            })
+        })
+}
+//showCaroselCollection();
+
+//-----------------------------------------------------
+//After user picks a image file, display it right away
+//-----------------------------------------------------
 function showUploadedPicture() {
     const fileInput = document.getElementById("mypic-input"); // pointer #1
     const image = document.getElementById("mypic-goes-here"); // pointer #2
     fileInput.addEventListener('change', function (e) { //event listener
         var blob = URL.createObjectURL(e.target.files[0]);
         var filename = e.target.files[0].name;
+        console.log(filename);
         image.src = blob;
     })
 }
@@ -197,7 +239,7 @@ function uploadUserProfilePic() {
             image.src = blob;
 
             //store using this name
-            var storageRef = storage.ref("images/" + user.uid + ".jpg");
+            var storageRef = firebase.storage().ref("images/" + user.uid + ".jpg");
 
             //upload the picked file
             storageRef.put(file)
@@ -221,7 +263,7 @@ function uploadUserProfilePic() {
         })
     })
 }
-uploadUserProfilePic();
+//uploadUserProfilePic();
 
 function displayUserProfilePic() {
     console.log("hi");
@@ -240,12 +282,223 @@ function displayUserProfilePic() {
 }
 displayUserProfilePic();
 
-// put map into a DOM with id "map"
-let map;
-
-function initMap() {
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: -34.397, lng: 150.644 },
-    zoom: 8,
-  });
+//-------------------------------------------------------------------
+// This function is an example of how you can read data from a JSON file
+// that is located on the internet server
+// It uses XMLHttpRequest() to 
+// https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON
+//-------------------------------------------------------------------
+function readJSON(url) {
+    let requestURL = url;
+    let request = new XMLHttpRequest();
+    request.open('GET', requestURL);
+    request.responseType = 'json';
+    request.send();
+    request.onload = function () {
+        const myjson = request.response;
+        console.log(myjson);
+        console.log(myjson[0].id);
+    }
 }
+//readJSON('https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json');
+
+function readJSONfromStorage() {
+    firebase.storage().ref("Food.json").getDownloadURL()
+        .then((url) => {
+            // `url` is the download URL for 'Food.json'
+            // This can be downloaded directly:
+            var xhr = new XMLHttpRequest();
+            xhr.responseType = 'json';
+
+            xhr.open('GET', url);
+            xhr.send();
+
+            xhr.onload = (event) => {
+                var blob = xhr.response;
+                console.log(blob[0].id);
+            };
+
+            // Do something with the JSON file
+            //console.log(blob[0].id);
+        })
+        .catch((error) => {
+            // Handle any errors
+        });
+}
+//readJSONfromStorage();
+
+function getCollectionSize() {
+    db.collection("cities").get()
+        .then(function (snap) {
+            var size = snap.size;
+            console.log(size);
+        })
+}
+//getCollectionSize();
+
+//the json must be hosted on internet
+//browser does not allow you to read local files
+//we can trick the computer to doing https
+//python -m http.server
+//start a webserver on my computer
+//localhost:8000/index.html
+function readLocalJSON() {
+    console.log("in readFoodJSON");
+    fetch("Food.json") //assume on computer   
+        .then(function (response) {
+            response.json()
+                .then(function (data) {
+                    console.log(data);
+                    data.forEach(function (item) {
+                        var food = {
+                            "name": item.name,
+                            "description": item.description
+                        }
+                        db.collection("foods").add(food);
+                    })
+                })
+        })
+}
+//readLocalJSON();
+
+function writeBradData3() {
+    firebase.auth().onAuthStateChanged(function (user) {
+        var userid = user.uid;
+        var bio = "i'm a cst student";
+        var profileinfo1 = "hi";
+        var profileinfo2 = "there";
+
+        var item = {
+            "bio": bio,
+            "profile": {
+                "info1": profileinfo1,
+                "info2": profileinfo2,
+                "info3": "new stuff"
+            }
+        }
+        console.log(item);
+        db.collection("users").doc(user.uid)
+            .update(item);
+
+    })
+}
+//writeBradData3();
+
+function writeBradData2() {
+    firebase.auth().onAuthStateChanged(function (user) {
+        var userid = user.uid;
+        var bio = "i'm a cst student";
+        var profileinfo1 = "info1";
+        var profileinfo2 = "info2";
+
+        var item = {
+            "bio": bio
+        }
+        var pitem = {
+            "p1": profileinfo1,
+            "p2": profileinfo2
+        }
+        console.log(item);
+        db.collection("users").doc(user.uid)
+            .update(item)
+            .then(function () {
+                db.collection("users/" + user.uid + "/profiles")
+                    .add(pitem);
+            })
+
+    })
+}
+//writeBradData2();
+
+function writeBradData3() {
+    firebase.auth().onAuthStateChanged(function (user) {
+        var userid = user.uid;
+        var bio = "i'm a cst student";
+        var profileinfo1 = "hi";
+        var profileinfo2 = "there";
+
+        var item = {
+            "bio": bio,
+            "experience": "blah",
+            "firstname": "blah",
+            "lastname": "blah",
+            "headline": "blah",
+            "references": ["my dad", "my mom"]
+        }
+        console.log(item);
+        db.collection("users").doc(user.uid)
+            .update(item);
+
+    })
+}
+//writeBradData3();
+
+// https://firebase.googleblog.com/2019/11/cloud-firestore-now-supports-in-queries.html
+function writeRestaurants() {
+    var dbRef = db.collection("restaurants");
+    dbRef.add({
+        name: "fish house",
+        type: ["american", "seafood"]
+    });
+    dbRef.add({
+        name: "kirin",
+        type: ["asian", "seafood"]
+    });
+    dbRef.add({
+        name: "tacobell",
+        type: ["fast"]
+    });
+    dbRef.add({
+        name: "samurai sushi",
+        type: ["asian", "fast"]
+    });
+}
+//writeRestaurants();
+
+function writeUserPrefs() {
+    //get all this information from form when it is submitted
+    var p1 = "asian";
+    var p2 = "fast";
+
+    //put all these into an array
+    var preferences = [];
+    preferences.push(p1); //if user clicked asian
+    preferences.push(p2); //if user clicked fast
+
+    // write this array into one key/value pair
+    firebase.auth().onAuthStateChanged(function (user) {
+        db.collection("users").doc(user.uid)
+            .update({
+                "preferences": preferences    
+            })
+    })
+}
+
+function showMyRestaurants() {
+    firebase.auth().onAuthStateChanged(function (user) {
+
+        //get the list of all preferences for this user
+        db.collection("users").doc(user.uid).get()
+            .then(function (snap) {
+                var myPrefs = snap.data().preferences;   //key is "preference"
+                console.log(myPrefs);                    //check it out first
+
+                //get a collection of all docs where "type" appears in pref array
+                db.collection("restaurants")
+                    .where("type", "array-contains-any", myPrefs)   //New Amazing Query
+                    .get()
+                    .then(function (rs) {
+                        if (rs) {    //not null
+                            rs.forEach(function (r) {   //cycle thru results
+                                var name = r.data().name;   //grab name
+                                var id = r.id;              //grab id
+                                $("#restaurants-go-here").append("<p id='" + id + "'> " + name + "</p>");
+                                //attach listener, and redirect to another page to show details.
+                            })
+                        }
+                    })
+
+            })
+    })
+}
+showMyRestaurants();
