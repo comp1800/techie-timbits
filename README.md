@@ -5,13 +5,14 @@
 * [Contents](#content)
 
 ## General Info
-This repo has assortment of small functions (hence, "techie-timbits") for comp1800 tech-request demos. They are meant to be bite-sized solutions to help students along. Enjoy! 
+This repository project contains an assortment of small functions (hence, "techie-timbits") for comp1800 tech-request demos. They are meant to be bite-sized solutions to help students along based on questions that have come up. Enjoy! 
 	
 ## Technologies
 Technologies used for this project:
 * HTML, CSS
 * JavaScript
 * Bootstrap 
+* JQuery
 * ...
 	
 ## Content
