@@ -92,7 +92,7 @@ function displayRandomCity() {
             })
         })
 }
-displayRandomCity();
+//displayRandomCity();
 
 function getCity() {
     document.getElementById("submit").addEventListener('click', function () {
@@ -109,7 +109,7 @@ function getCity() {
             })
     })
 }
-getCity();
+//getCity();
 
 function getCountry() {
     document.getElementById("globe").addEventListener('click', function () {
@@ -118,7 +118,7 @@ function getCountry() {
         // do something with the country string
     });
 }
-getCountry();
+//getCountry();
 
 function setDataPage1() {
     //construct the JSON object here
@@ -268,19 +268,21 @@ function uploadUserProfilePic() {
 function displayUserProfilePic() {
     console.log("hi");
     firebase.auth().onAuthStateChanged(function (user) {
-        //console.log(user.uid);
-        db.collection("users").doc(user.uid)
-            .get()
-            .then(function (doc) {
-                //console.log(doc.data());
-                var picUrl = doc.data().profilePic;
-                //console.log(picUrl);
-                //$("#mypicdiv").append("<img src='" + picUrl + "'>")
-                $("#mypic-goes-here").attr("src", picUrl);
-            })
+        if (user) {
+            console.log(user.uid);
+            db.collection("users").doc(user.uid)
+                .get()
+                .then(function (doc) {
+                    //console.log(doc.data());
+                    var picUrl = doc.data().profilePic;
+                    //console.log(picUrl);
+                    //$("#mypicdiv").append("<img src='" + picUrl + "'>")
+                    $("#mypic-goes-here").attr("src", picUrl);
+                })
+        }
     })
 }
-displayUserProfilePic();
+//displayUserProfilePic();
 
 //-------------------------------------------------------------------
 // This function is an example of how you can read data from a JSON file
@@ -469,7 +471,7 @@ function writeUserPrefs() {
     firebase.auth().onAuthStateChanged(function (user) {
         db.collection("users").doc(user.uid)
             .update({
-                "preferences": preferences    
+                "preferences": preferences
             })
     })
 }
@@ -480,18 +482,18 @@ function showMyRestaurants() {
         //get the list of all preferences for this user
         db.collection("users").doc(user.uid).get()
             .then(function (snap) {
-                var myPrefs = snap.data().preferences;   //key is "preference"
-                console.log(myPrefs);                    //check it out first
+                var myPrefs = snap.data().preferences; //key is "preference"
+                console.log(myPrefs); //check it out first
 
                 //get a collection of all docs where "type" appears in pref array
                 db.collection("restaurants")
-                    .where("type", "array-contains-any", myPrefs)   //New Amazing Query
+                    .where("type", "array-contains-any", myPrefs) //New Amazing Query
                     .get()
                     .then(function (rs) {
-                        if (rs) {    //not null
-                            rs.forEach(function (r) {   //cycle thru results
-                                var name = r.data().name;   //grab name
-                                var id = r.id;              //grab id
+                        if (rs) { //not null
+                            rs.forEach(function (r) { //cycle thru results
+                                var name = r.data().name; //grab name
+                                var id = r.id; //grab id
                                 $("#restaurants-go-here").append("<p id='" + id + "'> " + name + "</p>");
                                 //attach listener, and redirect to another page to show details.
                             })
@@ -501,4 +503,130 @@ function showMyRestaurants() {
             })
     })
 }
-showMyRestaurants();
+//showMyRestaurants();
+
+//------------------------------------------------
+// Call this function when the "Quit" button is clicked
+//-------------------------------------------------
+function logout() {
+    firebase.auth().signOut().then(() => {
+        // Sign-out successful.
+        console.log("logged out user");
+    }).catch((error) => {
+        // An error happened.
+    });
+}
+
+function SaveQuit() {
+    var field1 = "hi"; //get from form
+    var field2 = "world"; //get from form
+    //var field1 = document.getElementById("field1").value;
+    //var field2 = document.getElementById("field2").value;
+    //firebase.auth().onAuthStateChanged(function (user) {
+    //console.log(user);
+    //db.collection("users").doc(user.uid)
+    db.collection("parks").doc("bbymountain")
+        .set({
+            field1: field1,
+            field2: field2
+        }, {
+            merge: true
+        })
+        .then(function () {
+            logout();
+            window.location.href = "index.html";
+        })
+    //})
+}
+
+function addSaveQuitListener() {
+    document.getElementById("SaveQuitButton").addEventListener("click", function () {
+        console.log("clicked addSaveQuitListener()");
+        SaveQuit();
+    })
+}
+addSaveQuitListener();
+
+function writeFoodIntoList() {
+    var details = "lasts a long time";
+    var name = "peanut butter";
+    firebase.auth().onAuthStateChanged(function (user) {
+        db.collection("users")
+            .doc(user.uid)
+            .collection("lists")
+            .add({
+                "name": name,
+                "details": details,
+                "category": "fridge"
+            })
+    })
+}
+
+function readFromList(category) {
+    firebase.auth().onAuthStateChanged(function (user) {
+        db.collection("users")
+            .doc(user.uid)
+            .collection("lists")
+            .where("category", "==", "fridge")
+            .get() //get whole list
+            .then(function (snap) {
+                snap.forEach(function (doc) { //cycle thru items in list
+                    console.log(doc.data().name);
+                })
+            })
+    })
+}
+
+
+function deleteMe() {
+    del
+    firebase.auth().onAuthStateChanged(function (user) {
+        db.collection("jobPostings")
+            .where("jobPost.User", "==", user.id)
+            .get()
+            .then(function (snop) {
+                //delete DOM
+
+            })
+    })
+}
+
+//call this when the posting is displayed?
+function addDeleteButtonForMyJobs() {
+    firebase.auth().onAuthStateChanged(function (user) {
+        db.collection("jobPostings")
+            .where("jobPost.User", "==", user.uid)
+            .get()
+            .then(function (snap) {    //list of all my jobs
+                snap.forEach(function (post) {
+                    //create a delete button for each of My jobs
+
+                    // let deleteDiv = ...
+                    // let deleteButton =...
+                    // deleteButton.setAttribute("id", post.id);
+                    // let deleteTxt...
+                    // let deleteSec... 
+                    // deleteButton.appendChild...
+                    // deleteDiv.appendChild... 
+                    // deleteSection.appendChild...
+
+                    //add listener to each button to each of my job
+                    deleteButton.addEventListener("click", function () {
+                        alert("delete button clicked");
+                        removeMyPost(post.id); //remove single post
+                    })
+                })
+            })
+    })
+}
+
+function removeMyPost(postid) {
+    db.collection("jobPostings")
+        .doc(postid)
+        .delete()
+        .then(() => {
+            console.log("Document successfully deleted!");
+        }).catch((error) => {
+            console.error("Error removing document: ", error);
+        });
+}

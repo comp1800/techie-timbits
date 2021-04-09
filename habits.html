@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>My BCIT Project</title>
+    <meta name="comp1800 boilerplate code" content="my bcit project">
+    <meta name="author" content="BCIT">
+
+    <!-- Bootstrap, Firebase AuthUI -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+
+    <!-- Optional styles and scripts of your own -->
+    <link rel="stylesheet" href="styles/my_style.css">
+    <script src="https://kit.fontawesome.com/26da0e4274.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <!-------------------------------------->
+    <!-- The following is HTML for layout -->
+    <!-------------------------------------->
+    <!-- Header Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-info">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">myApp</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login/Signup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Pricing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Welcome and main part of the page -->
+    <div class="container text-center">
+        <h1 class="display-4">Hello <span id="username"> CST!</span></h1>
+        <h3> All my habits </h3>
+        <div id="all-my-habits-go-here"></div>
+        <h3> My calendar of habits </h3>
+        <div id="calendar-habits-go-here"></div>
+
+
+        <div class="container">
+            <div class="row">
+                <div style="background-color: aquamarine" class="col-sm">
+                    <h1> MONDAY </h1>
+                    <div id="monday-habits-go-here" class="col-sm">
+                        n/a
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <h1> TUEDAY </h1>
+                    <div id="tuesday-habits-go-here" class="col-sm">
+                        n/a
+                    </div>
+                </div>
+                <div style="background-color: aquamarine" class="col-sm">
+                    <h1> WEDNESDAY </h1>
+                    <div id="wednesday-habits-go-here" class="col-sm">
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <h1> WEDNESDAY </h1>
+                    <div id="wednesday-habits-go-here" class="col-sm">
+                    </div>
+                </div>
+                <div style="background-color: aquamarine"  class="col-sm">
+                    <h1> WEDNESDAY </h1>
+                    <div id="wednesday-habits-go-here" class="col-sm">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Here is a sticky footer with some icons  -->
+    <div class="container mb-5">
+        <footer class="navbar justify-content-evenly bg-info fixed-bottom">
+            <div class="container">
+                <i class="fas fa-home"></i>
+                <i class="fas fa-cog fa-spin"></i>
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-dog"></i>
+            </div>
+        </footer>
+    </div>
+
+    <!----------------------------------------------->
+    <!-- JS: Boostrap, Firebase, API related    -->
+    <!----------------------------------------------->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous">
+        </script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
+
+
+    <!-- Link to the api keys for your firebase project -->
+    <script src="./scripts/firebase_api_carly.js"></script>
+
+
+    <!--------------------------------------------------------------------->
+    <!-- JS files: Your own JavaScript functions included here    -->
+    <!--------------------------------------------------------------------->
+    <!-- <script type="text/javascript" src="data.js"></script> -->
+
+    <!-- <script src="./scripts/my_functions.js"> </script> -->
+
+    <script>
+        function addOneHabit(name) {
+            var mon = false;   //get from checkbox
+            var tue = true;
+            var wed = true;
+            firebase.auth().onAuthStateChanged(function (user) {
+                db.collection("users").doc(user.uid)
+                    .collection("habits")
+                    .add({
+                        "timestamp": firebase.firestore.FieldValue.serverTimestamp(),
+                        "name": name,
+                        "mon": mon,
+                        "tue": tue,
+                        "wed": wed
+                    })
+                    .then(function () {
+                        updateDaysArray(user.uid, name, mon, tue, wed);
+                    })
+            })
+        }
+        //addOneHabit("swim");
+        //addOneHabit("walk");
+
+        function updateDaysArray(uid, name, mon, tue, wed) {
+            var obj = {};  //empty object
+            if (mon) { //add "monday", key value pair
+                obj.monday = firebase.firestore.FieldValue.arrayUnion(name);
+            }
+            if (tue) {
+                obj.tuesday = firebase.firestore.FieldValue.arrayUnion(name);
+            }
+            if (wed) {
+                obj.wednesday = firebase.firestore.FieldValue.arrayUnion(name);
+            }
+            console.log(obj);  //filled-up object
+            db.collection("users").doc(uid)
+                .set(obj, {
+                    merge: true
+                })
+        }
+
+        function showAllMyHabits() {
+            firebase.auth().onAuthStateChanged(function (user) {
+                db.collection("users").doc(user.uid)
+                    .collection("habits")
+                    .orderBy("timestamp")   //ordering your list 
+                    .get()
+                    .then(function (snap) {
+                        snap.forEach(function (doc) {
+                            var name = doc.data().name;
+                            $("#all-my-habits-go-here").append("<p> " + name + "</p>");
+                        })
+                    })
+            })
+        }
+        showAllMyHabits();
+
+        function showAllMyHabitsOnThisDay2(day) {
+            firebase.auth().onAuthStateChanged(function (user) {
+                db.collection("users").doc(user.uid)
+                    .collection("habits")
+                    .where(day, "==", true)
+                    .get()
+                    .then(function (snap) {
+                        snap.forEach(function (doc) {
+                            var name = doc.data().name;
+                            console.log(day + " habits are : ");
+                            $("#calendar-habits-go-here").append("<p> " + day + ": " + name + "</p>");
+                        })
+                    })
+            })
+        }
+        //showAllMyHabitsOnThisDay2("mon");
+        //showAllMyHabitsOnThisDay2("tue");
+        //showAllMyHabitsOnThisDay2("wed");
+
+
+        function showAllMyHabitsOnThisDay1(day) {
+            firebase.auth().onAuthStateChanged(function (user) {
+                db.collection("users").doc(user.uid)
+                    .get()
+                    .then(function (doc) {
+                        console.log(doc.data());
+
+                        var habitlist = doc.data()[day];   //index into document with "monday" as "key"
+                        console.log("Habit list for " + day + " is " + habitlist);
+
+                        //console.log(day + " habits are " + habitlist); //index is the key "monday"
+                        //$("#calendar-habits-go-here").append("<p> " + day + ": " + habitlist + "</p>")
+
+                        if (habitlist) {   //only display if the list is not empty
+                            habitlist.forEach(function (h) {
+                                $("#" + day + "-habits-go-here").append("<p>" + h + "</p>");
+                            })
+                        }
+                    })
+            })
+        }
+        showAllMyHabitsOnThisDay1("monday");
+        showAllMyHabitsOnThisDay1("tuesday");
+        showAllMyHabitsOnThisDay1("wednesday");
+
+    </script>
+
+
+
+</body>
+
+</html>

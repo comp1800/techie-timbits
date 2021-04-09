@@ -1,0 +1,43 @@
+
+/users/useruid/    name: ..
+                    email: ..
+                    lists/2343 /name:  eggs
+                                category:  fridge
+                                details:  ..
+                        /3143/ name:  flour
+                                category: pantry
+                                details:  ..
+
+
+                                
+                                function writeFoodIntoList(){
+                                    var details="lasts a long time";
+                                    var name="peanut butter";
+                                    firebase.auth().onAuthStateChanged(function(user){
+                                        db.collection("users")
+                                        .doc(user.uid)
+                                        .collection("lists")
+                                        .add({
+                                            "name": name,  
+                                            "details": details,
+                                            "category": "fridge"
+                                        })
+                                    })
+                                }
+                                function readFromList(category){
+                                    firebase.auth().onAuthStateChanged(function(user){
+                                        db.collection("users")
+                                        .doc(user.uid)
+                                        .collection("lists")
+                                        .where("category", "==", "fridge")
+                                        .get()                            //get whole list
+                                        .then(function(snap){
+                                            snap.forEach(function(doc){   //cycle thru items in list
+                                                console.log(doc.data().name);
+                                            })
+                                        })
+                                    })
+                                }
+                                
+
+                                

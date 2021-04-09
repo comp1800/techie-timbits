@@ -15,7 +15,7 @@
 
     <!-- Optional styles and scripts of your own -->
     <link rel="stylesheet" href="styles/my_style.css">
-
+    <script src="https://kit.fontawesome.com/26da0e4274.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -50,17 +50,30 @@
         </div>
     </nav>
 
-    <!-- welcome and main part of the page -->
-    <div class="container">
-        <h1 class="display-4">Elmo's Coffee App</h1>
-        <p>Do you want to track your coffee consumption each day?
-            You've come to the right place. Get started now!</p>
-        <a href="login.html" class="btn btn-info">Login/Signup</a>
+    <!-- Welcome and main part of the page -->
+    <div class="container text-center">
+        <h1 class="display-4">Hello <span id="username"> CST!</span></h1>
+        <div id="details-go-here"></div>
+    </div>
+
+
+    <!-- Here is a sticky footer with some icons  -->
+    <div class="container mb-5">
+        <footer class="navbar justify-content-evenly bg-info fixed-bottom">
+            <div class="container">
+                <i class="fas fa-home"></i>
+                <i class="fas fa-cog fa-spin"></i>
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-dog"></i>
+            </div>
+        </footer>
     </div>
 
     <!----------------------------------------------->
     <!-- JS: Boostrap, Firebase, API related    -->
     <!----------------------------------------------->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous">
         </script>
@@ -70,13 +83,45 @@
     <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
 
+
     <!-- Link to the api keys for your firebase project -->
-    <script src="scripts/firebase_api_carly.js"></script>
-    <script src="https://kit.fontawesome.com/26da0e4274.js" crossorigin="anonymous"></script>
+    <script src="./scripts/firebase_api_carly.js"></script>
+
+
     <!--------------------------------------------------------------------->
     <!-- JS files: Your own JavaScript functions included here    -->
     <!--------------------------------------------------------------------->
-    <script src="scripts/my_functions.js"></script>
+    <!-- <script type="text/javascript" src="data.js"></script> -->
+
+    <!-- <script src="./scripts/my_functions.js"> </script> -->
+
+    <script>
+        function getDetails() {
+            // https://some.site/?id=123
+            const parsedUrl = new URL(window.location.href);
+            console.log(parsedUrl.searchParams.get("id")); // "123"
+
+            var id = parsedUrl.searchParams.get("id");
+            console.log(id);
+            db.collection("webcams")
+            .doc(id)
+            .get()
+            .then(function(doc){
+                var name = doc.data().fields.name;
+                var geo_area = doc.data().fields.geo_local_area;
+                var coord = doc.data().fields.geom.coordinates; 
+                var url = doc.data().fields.url; 
+                $("#details-go-here").append("<h1> " + name + "</h1>");
+                $("#details-go-here").append("<h1> " + geo_area + "</h1>");
+                $("#details-go-here").append("<h1> " + coord + "</h1>");
+                $("#details-go-here").append("<a href='"+ url + "' > " + url + ">");
+            })
+        }
+        getDetails();
+
+    </script>
+
+
 
 </body>
 
